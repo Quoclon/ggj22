@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public PlayerMovement[] cats;
 
     CanvasManager canvasManager;
+    AudioManager audioManager;
+
 
     public float turns = 0;
 
@@ -19,6 +21,8 @@ public class GameManager : MonoBehaviour
     {
         canvasManager = GameObject.FindObjectOfType<CanvasManager>();
         pushableObjects = GameObject.FindObjectsOfType<PushableMovement>();
+        audioManager = GameObject.FindObjectOfType<AudioManager>();
+
         cats = GameObject.FindObjectsOfType<PlayerMovement>();
 
     }
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour
     {
         //IF All are paired up, you win!
         canvasManager.SetWinScreen(true);
+        audioManager.PlayCatPur();
         DisablePlayers();
     }
 
@@ -70,6 +75,7 @@ public class GameManager : MonoBehaviour
         // Called if a lose condition is met
         canvasManager.SetLoseScreen(true);
         DisablePlayers();
+        audioManager.PlayCatAngry();
     }
 
     public void DisablePlayers()

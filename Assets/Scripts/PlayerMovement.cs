@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+
+    [Header("Managers")]
+    GameManager gameManager;
+    AudioManager audioManager;
+    
     private Rigidbody2D rb;
     Vector3 lastMovementDirection;
-    GameManager gameManager;
 
     public int playerNum;
 
@@ -20,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
+        audioManager = GameObject.FindObjectOfType<AudioManager>();
     }
 
     // Update is called once per frame
@@ -71,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //Increase Turns - Regardless of if Move actually happens
         gameManager.IncreaseTurns();
-
+        audioManager.PlayCatFootSteps();
 
         Debug.DrawRay(rb.transform.position, direction, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(direction.x, direction.y, 0), direction, 0.1f);

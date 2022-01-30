@@ -103,7 +103,7 @@ public class PushableMovement : MonoBehaviour
         if (hit.collider.tag == "Wall")
         {
             Debug.Log("True");
-            return true;
+            return false;
         }
 
         if (hit.collider.tag == "Pushable")
