@@ -20,10 +20,14 @@ public class GameManager : MonoBehaviour
     public PushableMovement[] pushableObjects;
     public PlayerMovement[] cats;
 
-    [Header("Tracked Turns")]
+    // Leaderboard 
+    [Header("Leaderboard Data")]
     public float turns = 0;
+    public string levelName = "Level";
+    public bool playerSentPlayFabDataAlready = false;
 
     //Managers
+    PlayFabManager playfabManager;
     CanvasManager canvasManager;
     AudioManager audioManager;
 
@@ -37,6 +41,11 @@ public class GameManager : MonoBehaviour
         // Managers
         canvasManager = GameObject.FindObjectOfType<CanvasManager>();
         audioManager = GameObject.FindObjectOfType<AudioManager>();
+        playfabManager = GameObject.FindObjectOfType<PlayFabManager>();
+
+        // Game Level Name - Used for PlayFab leaderboards
+        levelName = SceneManager.GetActiveScene().name;
+
     }
 
     // Update is called once per frame
@@ -85,6 +94,13 @@ public class GameManager : MonoBehaviour
     public void PlayerWins()
     {
         //IF All are paired up, you win!
+        if (!playerSentPlayFabDataAlready)
+        {
+            playfabManager.SendLeaderBoard((int)turns);
+            // ~ Make an Async Call here so we can get the updated leaderboard?
+            playfabManager.GetLeaderboard();
+            playerSentPlayFabDataAlready = true;
+        }
         canvasManager.SetWinScreen(true);
         audioManager.PlayCatPur();
         DisablePlayers();

@@ -9,13 +9,17 @@ public class CustomSceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int nextScene = SceneManager.GetActiveScene().buildIndex + 1; // Get next scene in Build Index
-        SceneManager.LoadScene(nextScene);
-    }
+        // Go to Player Cat Naming Screen by Default
+        int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // If the Player Cat already has a name, then skip right into game (consistent leaderboards)
+        if (PlayerPrefs.GetString("name") != null)
+        {
+            if(PlayerPrefs.GetString("name").Length > 0)
+            {
+                nextScene = SceneManager.GetActiveScene().buildIndex + 2; // Get next scene in Build Index
+            }
+        }
+        SceneManager.LoadScene(nextScene);
     }
 }
