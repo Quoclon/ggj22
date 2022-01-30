@@ -6,25 +6,37 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Game Modes")]
+    public bool combinePlayersToWin = false;
+    public bool combinePushablesToWin = false;
+  
+    public bool combinePushablesOnPushableCollision = false;
+    public bool destroyPlayerOnWallCollision = false;
+    public bool destroyPushableOnWallCollision = false;
+
+
+    // ~ TODO: Make pushableObjects have a "destroyed" status, otherwise Pair Cheking won't work
+    [Header("Tracked Objects")]
     public PushableMovement[] pushableObjects;
     public PlayerMovement[] cats;
 
-    CanvasManager canvasManager;
-    AudioManager audioManager;
-
-
+    [Header("Tracked Turns")]
     public float turns = 0;
 
+    //Managers
+    CanvasManager canvasManager;
+    AudioManager audioManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        canvasManager = GameObject.FindObjectOfType<CanvasManager>();
-        pushableObjects = GameObject.FindObjectsOfType<PushableMovement>();
-        audioManager = GameObject.FindObjectOfType<AudioManager>();
-
+        // Tracked Objects
         cats = GameObject.FindObjectsOfType<PlayerMovement>();
+        pushableObjects = GameObject.FindObjectsOfType<PushableMovement>();
 
+        // Managers
+        canvasManager = GameObject.FindObjectOfType<CanvasManager>();
+        audioManager = GameObject.FindObjectOfType<AudioManager>();
     }
 
     // Update is called once per frame
@@ -34,35 +46,43 @@ public class GameManager : MonoBehaviour
             ResetScene();
     }
 
-    public bool AllPushablesArePaired()
+    // Win Condition -- All Pushables Combined To Win
+    public bool CheckIfAllPushablesArePaired()
     {
+        if (!combinePushablesOnPushableCollision)
+            return false;
+
         foreach (var pushable in pushableObjects)
         {
-            Debug.Log(pushable.pairedUp);
-
             if (!pushable.pairedUp)
                 return false;
         }
 
+        // If All Pushables are Paired -- Game Mode - set to Pushable Pairing - Player Wins (return true)
         return true;
     }
 
+    // Win Condition -- Cats Combined To Win ~ NEED: All Pushables combined as well
     public bool CheckIfCatsCanMerge()
     {
-        foreach (var pushable in pushableObjects)
+        if (!combinePlayersToWin)
+            return false;
+
+        // Pushables All Combined -- So now players can combine
+        if (combinePushablesToWin)
         {
-            if (!pushable.pairedUp)
-                return false;
+            foreach (var pushable in pushableObjects)
+            {
+                if (!pushable.pairedUp)
+                    return false;
+            }
         }
 
-        //canvasManager.SetWinScreen(true);
-        //DisablePlayers();
-
-        //IF All are paired up, you win!
+        // If All Cats are Paired -- Game Mode - set to Cats Pairing - Player Wins (return true)
         return true;
     }
 
-    public void CheckWinCondition()
+    public void PlayerWins()
     {
         //IF All are paired up, you win!
         canvasManager.SetWinScreen(true);
@@ -70,7 +90,7 @@ public class GameManager : MonoBehaviour
         DisablePlayers();
     }
 
-    public void GameOver()
+    public void PlayerLoses()
     {
         // Called if a lose condition is met
         canvasManager.SetLoseScreen(true);
@@ -81,9 +101,7 @@ public class GameManager : MonoBehaviour
     public void DisablePlayers()
     {
         foreach (var cat in cats)
-        {
             cat.gameObject.SetActive(false);
-        }
     }
 
     public void ResetScene()
