@@ -98,11 +98,11 @@ public class GameManager : MonoBehaviour
         {
             playfabManager.SendLeaderBoard((int)turns);
             // ~ Make an Async Call here so we can get the updated leaderboard?
-            playfabManager.GetLeaderboard();
+            //playfabManager.GetLeaderboard();
+            canvasManager.SetWinScreen(true);
+            audioManager.PlayCatPur();
             playerSentPlayFabDataAlready = true;
         }
-        canvasManager.SetWinScreen(true);
-        audioManager.PlayCatPur();
         DisablePlayers();
     }
 
@@ -130,5 +130,11 @@ public class GameManager : MonoBehaviour
     {
         turns += 0.5f;
         canvasManager.SetTurns((int)turns);
+    }
+
+    public void LoadNextScene()
+    {
+        //Scene scene = SceneManager.GetActiveScene();
+        //SceneManager.LoadScene(scene.name);
     }
 }

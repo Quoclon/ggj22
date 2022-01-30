@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using TMPro;
+using UnityEngine.UI;
 
 public class PlayFabManager : MonoBehaviour
 {
     GameManager gameManager;
+
+    [Header("Leaderboard Related")]
+    public GameObject leaderboardPanel;
+    public GameObject listingPrefab;
+    public Transform listingContainer;
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +75,7 @@ public class PlayFabManager : MonoBehaviour
 
     public void SendLeaderBoard(int score)
     {
+
         var request = new UpdatePlayerStatisticsRequest
         {
             Statistics = new List<StatisticUpdate>
@@ -75,16 +83,35 @@ public class PlayFabManager : MonoBehaviour
                 new StatisticUpdate
                 {
                     StatisticName = gameManager.levelName,
-                    Value = (int)gameManager.turns
+                    Value = (int)-gameManager.turns
                 }
             }
         };
 
         PlayFabClientAPI.UpdatePlayerStatistics(request, OnLoaderboardUpdate, OnError);
+
+        /*
+        var request = new UpdatePlayerStatisticsRequest
+        {
+            Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate
+                {
+                    StatisticName = gameManager.levelName,
+                    Value = (int)-gameManager.turns
+                }
+            }
+        };
+
+        PlayFabClientAPI.UpdatePlayerStatistics(request, OnLoaderboardUpdate, OnError);
+        */
     }
 
     void OnLoaderboardUpdate(UpdatePlayerStatisticsResult result)
     {
+        StartCoroutine(ExampleCoroutine());
+
+        //GetLeaderboard();
         Debug.Log("Successful Leaderboard Send");
     }
 
@@ -94,7 +121,7 @@ public class PlayFabManager : MonoBehaviour
         {
             StatisticName = gameManager.levelName,
             StartPosition = 0,
-            MaxResultsCount = 10
+            MaxResultsCount = 5
         };
 
         PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardGet, OnError);
@@ -102,9 +129,43 @@ public class PlayFabManager : MonoBehaviour
 
     void OnLeaderboardGet(GetLeaderboardResult result)
     {
-        foreach (var item in result.Leaderboard)
+        leaderboardPanel.SetActive(true);
+
+        foreach (var player in result.Leaderboard)
         {
-            Debug.Log(item.Position + " " + item.PlayFabId + " " + item.StatValue);
+            GameObject tempListing = Instantiate(listingPrefab, listingContainer);
+            LeaderboardListing LL = tempListing.GetComponent<LeaderboardListing>();
+            LL.playerNameText.text = player.DisplayName;
+            LL.playerScoreText.text = (-player.StatValue).ToString(); // Invert back to regular score style
+
+            Debug.Log(player.Position + " " + player.PlayFabId + " " + player.StatValue);
         }
     }
+
+    IEnumerator ExampleCoroutine()
+    {
+        //Print the time of when the function is first called.
+        Debug.Log("Started Coroutine at timestamp : " + Time.time);
+
+        //yield on a new YieldInstruction that waits for 5 seconds.
+        yield return new WaitForSeconds(1);
+
+        GetLeaderboard();
+
+        //After we have waited 5 seconds print the time again.
+        Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+    }
+
+    
+    public void CloseLeaderboardPanel()
+    {
+        leaderboardPanel.SetActive(false);
+        for (int i = listingContainer.childCount - 1; i >= 2; i--)
+        {
+            Destroy(listingContainer.GetChild(i).gameObject);
+        }
+
+        gameManager.ResetScene();
+    }
+    
 }
