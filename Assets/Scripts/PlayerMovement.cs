@@ -1,27 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     Vector3 lastMovementDirection;
+    GameManager gameManager;
 
     public int playerNum;
+
+    [Header("Trailing Blocks")]
+    [SerializeField] bool dropsTrailingBlocks;
+    [SerializeField] GameObject trailingBlock;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        gameManager = GameObject.FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-            SceneManager.LoadScene(0);
 
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -47,28 +50,60 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    internal bool CanMoveInDir(Vector2 direction)
+    {
+        Debug.DrawRay(rb.transform.position, direction, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(direction.x, direction.y, 0), direction, 0.1f);
+
+        if (hit.collider == null)
+            return true;
+
+        if(hit.collider.tag == "Pushable")
+        {
+            Debug.Log("Test");
+            return hit.collider.GetComponent<PushableMovement>().CanMoveInDir(direction);
+        }
+
+        return false;
+    }
+
     private void MoveDirectionCheck(Vector2 direction)
     {
+        //Increase Turns - Regardless of if Move actually happens
+        gameManager.IncreaseTurns();
+
+
         Debug.DrawRay(rb.transform.position, direction, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(direction.x, direction.y, 0), direction, 0.1f);
         //Debug.Log("Pushable Raycast Collided With: " + hit.collider);
 
         lastMovementDirection = direction;
 
-
+        // Non-Block Space -- Move Player
+        if (hit.collider != null && hit.collider.tag == "Obstacle")
+        {
+            return;
+        }
 
         // Non-Block Space -- Move Player
         if (hit.collider == null)
         {
-            transform.Translate(direction);
+            MovePlayer(direction);
             return;
         }
+
+        // Check if Another Player
+        if (hit.collider.gameObject != this.gameObject && hit.collider.tag == "Player"){
+            MovePlayer(direction);
+            return;
+        }
+
 
         // Blocking Space Wall - Move Player (then destroy)
         if (hit.collider.tag == "Wall")
         {
-            //transform.Translate(direction);
-            //return;
+            MovePlayer(direction);
+            return;
         }
 
         // Pusable Object - Push the Object and Move Player if possible
@@ -82,10 +117,9 @@ public class PlayerMovement : MonoBehaviour
 
             // If pushableObj can move; Move pushableObject; Move Player;
             pushableObj.MovePushable(lastMovementDirection);
-            transform.Translate(direction);
+            MovePlayer(direction);
             return;
         }
-
 
         // ~ Destroy Players (Win Condition?) if they collide
         /*
@@ -98,15 +132,64 @@ public class PlayerMovement : MonoBehaviour
         */
     }
 
+    void MovePlayer(Vector2 direction)
+    {
+
+        //Move Player - But first get current postion
+        Vector2 posBeforeMove = new Vector2(transform.position.x, transform.position.y - 0.01f);
+        transform.Translate(direction);
+
+        if (!dropsTrailingBlocks)
+            return;
+
+        if (this.gameObject.activeSelf)
+            DropColoredBlock(posBeforeMove);
+    }
+
+    void DropColoredBlock(Vector2 dropBlockAtPos)
+    {
+        Instantiate(trailingBlock, dropBlockAtPos, Quaternion.identity);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /// <summary>
+    /// Triggers
+    /// </summary>
+    /// <param name="collision"></param>
+
     private void OnTriggerEnter2D(Collider2D collision)
     {   
         // ~ Destroy Player on Wall Collision
-        /*
         if(collision.tag == "Wall")
         {
-            Debug.Log("You Lose");
+            gameManager.GameOver();
             return;
         }
-        */        
+
+        // If Players Collide - Lose if not all Pickups are Paired; Win Otherwise;
+        if (collision.tag == "Player")
+        {
+            bool canCombinePlayersToWin = false;
+            canCombinePlayersToWin = gameManager.CheckIfCatsCanMerge();
+
+            // ~ TEMP: Winning based on colliding with Each Other without Pairables
+            canCombinePlayersToWin = true;
+
+            if (canCombinePlayersToWin)
+                gameManager.CheckWinCondition();
+            else
+                gameManager.GameOver();
+        }
+
     }
 }
