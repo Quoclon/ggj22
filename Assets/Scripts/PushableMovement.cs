@@ -112,6 +112,10 @@ public class PushableMovement : MonoBehaviour
     // Pair Up Pushables - Game Mode - Pushables Paired Up to Win
     void PairUpPushableObjets(Collider2D collision)
     {
+
+        //Play Sound when Combined -- 
+        gameManager.audioManager.PlayPushableCombiningSound();
+
         // Pushable Objects are now paired up
         pairedUp = true;
         collision.GetComponent<PushableMovement>().pairedUp = true;
@@ -119,6 +123,7 @@ public class PushableMovement : MonoBehaviour
         //Disable Pushable Objects
         gameObject.SetActive(false);
         collision.gameObject.SetActive(false);
+
 
         //Check Win Condition -- Game Mode Pushables Combine to Win
         bool allPushablesPaired = gameManager.CheckIfAllPushablesArePaired();

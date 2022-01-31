@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     //Managers
     PlayFabManager playfabManager;
     CanvasManager canvasManager;
-    AudioManager audioManager;
+    public AudioManager audioManager;
 
     // Start is called before the first frame update
     void Start()
@@ -136,5 +136,10 @@ public class GameManager : MonoBehaviour
     {
         //Scene scene = SceneManager.GetActiveScene();
         //SceneManager.LoadScene(scene.name);
+    }
+
+    public void CloseAllScreens()
+    {
+        //
     }
 }

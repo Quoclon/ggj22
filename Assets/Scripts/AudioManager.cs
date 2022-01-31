@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-
+    [Header("Cat Sounds")]
     public AudioSource catFootSteps;
     public AudioSource catAngry;
     public AudioSource catPur;
+
+    [Header("Pushable Combined Sounds")]
+    public AudioSource pushableCombinedSound;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +22,11 @@ public class AudioManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void PlayPushableCombiningSound()
+    {
+        pushableCombinedSound.Play();
     }
 
     public void PlayCatFootSteps()
