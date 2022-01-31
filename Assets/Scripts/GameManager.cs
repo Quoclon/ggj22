@@ -134,8 +134,8 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextScene()
     {
-        //Scene scene = SceneManager.GetActiveScene();
-        //SceneManager.LoadScene(scene.name);
+        int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+        SceneManager.LoadScene(nextScene);
     }
 
     public void CloseAllScreens()
