@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
+
 public class GameManager : MonoBehaviour
 {
     [Header("Game Modes")]
@@ -13,7 +14,6 @@ public class GameManager : MonoBehaviour
     public bool combinePushablesOnPushableCollision = false;
     public bool destroyPlayerOnWallCollision = false;
     public bool destroyPushableOnWallCollision = false;
-
 
     // ~ TODO: Make pushableObjects have a "destroyed" status, otherwise Pair Cheking won't work
     [Header("Tracked Objects")]
@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     PlayFabManager playfabManager;
     CanvasManager canvasManager;
     public AudioManager audioManager;
+
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if (Input.GetKeyDown(KeyCode.R))
             ResetScene();
     }
@@ -142,4 +143,29 @@ public class GameManager : MonoBehaviour
     {
         //
     }
+
+
+    //Mobile Controls - Since Canvas Buttons need an object before the prefab spawns
+    #region Movement Methods - Mobile and Keyboard
+    public void MovePlayer_Up()
+    {
+        foreach (var cat in cats)
+            cat.MovePlayer_Up();
+    }
+    public void MovePlayer_Down()
+    {
+        foreach (var cat in cats)
+            cat.MovePlayer_Down();
+    }
+    public void MovePlayer_Left()
+    {
+        foreach (var cat in cats)
+            cat.MovePlayer_Left();
+    }
+    public void MovePlayer_Right()
+    {
+        foreach (var cat in cats)
+            cat.MovePlayer_Right();
+    }
+    #endregion
 }

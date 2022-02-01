@@ -8,7 +8,6 @@ public class PlayerMovement : MonoBehaviour
     //TODO:
     // - Create a Toggle for Pushable Blocks to Combine for Testing
 
-
     // Bools - Trying out Systems
 
     // Managers - Private
@@ -40,15 +39,23 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // Move - Attempt Move in Given Direction (WASD)
-        if (Input.GetKeyDown(KeyCode.W))
-            MoveDirectionCheck(Vector2.up);
-        else if (Input.GetKeyDown(KeyCode.S))
-            MoveDirectionCheck(Vector2.down);
-        else if (Input.GetKeyDown(KeyCode.A))
-            MoveDirectionCheck(Vector2.left);
-        else if (Input.GetKeyDown(KeyCode.D))
-            MoveDirectionCheck(Vector2.right);
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            MovePlayer_Up();
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            MovePlayer_Down();
+        else if (Input.GetKeyDown(KeyCode.A)|| Input.GetKeyDown(KeyCode.LeftArrow))
+            MovePlayer_Left();
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            MovePlayer_Right();
     }
+
+    #region Movement Methods - Mobile and Keyboard
+    public void MovePlayer_Up(){ MoveDirectionCheck(Vector2.up); }
+    public void MovePlayer_Down() { MoveDirectionCheck(Vector2.down); }
+    public void MovePlayer_Left() { MoveDirectionCheck(Vector2.left); }
+    public void MovePlayer_Right() { MoveDirectionCheck(Vector2.right); }
+    #endregion
+
 
     // Check if Player can Move
     private void MoveDirectionCheck(Vector2 direction)
