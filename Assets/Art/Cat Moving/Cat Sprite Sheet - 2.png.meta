@@ -33,7 +33,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -328,8 +328,8 @@ TextureImporter:
       Cat Sprite Sheet - 2_16: -1568000501
       Cat Sprite Sheet - 2_44: -448075490
       Cat Sprite Sheet - 2_0: -539405425
-      Cat Sprite Sheet - 2_56: 812520768
       Cat Sprite Sheet - 2_35: 254633172
+      Cat Sprite Sheet - 2_56: 812520768
       Cat Sprite Sheet - 2_23: 1775611727
       Cat Sprite Sheet - 2_13: -1169881396
       Cat Sprite Sheet - 2_30: -284129767

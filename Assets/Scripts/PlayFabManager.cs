@@ -29,8 +29,8 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest
         {
             //CustomId = "PlayFabGetPlayerProfileCustomId",
-            //CustomId = gameManager.levelName,
-            CustomId = SystemInfo.deviceUniqueIdentifier,
+            //CustomId = SystemInfo.deviceUniqueIdentifier,
+            CustomId = PlayerPrefs.GetString("unique_id"),
             CreateAccount = true
         }, result => {
             Debug.Log("Successfully logged in a player with PlayFabId: " + result.PlayFabId);

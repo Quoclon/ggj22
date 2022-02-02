@@ -12,20 +12,23 @@ public class CustomSceneManager : MonoBehaviour
     void Start()
     {
         if (isCutScene)
-        {
-            // Go to Player Cat Naming Screen by Default
-            int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+            LoadPlayerSetupScreen();
+    }
 
-            // If the Player Cat already has a name, then skip right into game (consistent leaderboards)
-            if (PlayerPrefs.GetString("name") != null)
+    public void LoadPlayerSetupScreen()
+    {
+        // Go to Player Cat Naming Screen by Default
+        int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+
+        // If the Player Cat already has a name, then skip right into game (consistent leaderboards)
+        if (PlayerPrefs.GetString("name") != null)
+        {
+            if (PlayerPrefs.GetString("name").Length > 0)
             {
-                if (PlayerPrefs.GetString("name").Length > 0)
-                {
-                    nextScene = SceneManager.GetActiveScene().buildIndex + 2; // Get next scene in Build Index
-                }
+                nextScene = SceneManager.GetActiveScene().buildIndex + 2; // Get next scene in Build Index
             }
-            SceneManager.LoadScene(nextScene);
-        }   
+        }
+        SceneManager.LoadScene(nextScene);
     }
 
     public void LoadNextScene()
@@ -37,6 +40,6 @@ public class CustomSceneManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            LoadNextScene();
+            LoadPlayerSetupScreen();
     }
 }
