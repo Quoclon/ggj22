@@ -7,12 +7,16 @@ using UnityEngine.SceneManagement;
 public class CustomSceneManager : MonoBehaviour
 {
     public bool isCutScene;
+    public bool isFinalCutScene;
 
     // Start is called before the first frame update
     void Start()
     {
         if (isCutScene)
             LoadPlayerSetupScreen();
+
+        if(isFinalCutScene)
+            SceneManager.LoadScene(0);
     }
 
     public void LoadPlayerSetupScreen()
